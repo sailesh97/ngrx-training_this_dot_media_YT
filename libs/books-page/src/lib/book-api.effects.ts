@@ -11,13 +11,52 @@ export class BooksApiEffects {
   loadBooks$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(BooksPageActions.enter),
-      mergeMap(() => {
+      exhaustMap(() => {
         return this.booksService
         .all()
         .pipe(
-          map((books) => BooksApiActions.booksLoaded({books}))
+          map((books) => {return BooksApiActions.booksLoaded({books})})
         );
       })
     )
-  })
+  });
+
+  createBook$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(BooksPageActions.createBook),
+      concatMap((action) =>
+        { 
+          return this.booksService
+          .create(action.book)
+          .pipe(map((book) => BooksApiActions.bookCreated({ book })))
+        }
+      )
+
+    )}
+  );
+
+  updateBook$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(BooksPageActions.updateBook),
+      concatMap((action) =>
+        this.booksService
+        .update(action.bookId, action.changes)
+        .pipe(map((book)=> BooksApiActions.bookUpdated({book})))
+      )
+    )
+  );
+
+  deleteBook$ = createEffect(() => 
+      this.actions$.pipe(
+        ofType(BooksPageActions.deleteBook),
+        mergeMap((action) => 
+          this.booksService
+          .delete(action.bookId)
+          .pipe(
+            map(() => BooksApiActions.bookDeleted({bookId: action.bookId}))
+          )
+        )
+      )
+  );
+  
 }

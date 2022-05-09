@@ -39,6 +39,12 @@ export const reducer = createReducer(
       activeBookId: actions.bookId
     }
   }),
+  on(BooksApiActions.booksLoaded, (state, action) => {
+    return {
+      ...state,
+      collection: action.books,
+    };
+  }),
   on(BooksApiActions.bookCreated, (state,action) => {
     return {
       collection: createBook(state.collection, action.book),
@@ -60,7 +66,7 @@ export const reducer = createReducer(
 );
 
 /** Exporting Selectors */
-export const selectAll = (state: State) => state.collection; // Straight Forward Selector
+export const selectAll = (state: State) => {return state.collection}; // Straight Forward Selector
 export const selectActiveBookId = (state: State) => state.activeBookId;
 
 /* export const selectActiveBook_bad_performance = (state: State) => {

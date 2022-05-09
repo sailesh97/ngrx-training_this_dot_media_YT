@@ -34,8 +34,29 @@ export class SharedStateBooksModule {}
 /**
  * Feature Selector
  **/
+// Global Feature Selector
 export const selectSharedBooksState = createFeatureSelector<State>(FEATURE_KEY);
 
 /**
  * Books Selectors
  */
+
+export const selectBooksState = createSelector(
+  selectSharedBooksState,
+  (sharedBooksFeatureState) => sharedBooksFeatureState.books
+);
+
+export const selectAllBooks = createSelector(
+  selectBooksState,
+  fromBooks.selectAll // ---> selectAll : local feature selector
+);
+
+export const selectActiveBook = createSelector(
+  selectBooksState,
+  fromBooks.selectActiveBook
+)
+
+export const selectBooksEarningsTotals = createSelector(
+  selectBooksState,
+  fromBooks.selectEarningTotals
+);

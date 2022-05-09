@@ -58,3 +58,30 @@ export const reducer = createReducer(
     }
   })
 );
+
+/** Exporting Selectors */
+export const selectAll = (state: State) => state.collection; // Straight Forward Selector
+export const selectActiveBookId = (state: State) => state.activeBookId;
+
+/* export const selectActiveBook_bad_performance = (state: State) => {
+  const books = selectAll(state);
+  const activeBookId = selectActiveBookId(state);
+
+  return books.find((book) => book.id === activeBookId) || null;
+}; */
+
+export const selectActiveBook = createSelector( // Uses Memoization // Selector that needs complex calculation.
+  selectAll,
+  selectActiveBookId,
+  (books, activeBookId) => {
+    return books.find((book) => book.id === activeBookId) || null;
+  }
+);
+
+
+/* export const selectEarningTotals = createSelector(selectAll, (books) => {
+  return calculateBooksGrossEarnings(books);
+}) */
+
+// Short Syntax of above
+export const selectEarningTotals = createSelector(selectAll,calculateBooksGrossEarnings);
